@@ -7,7 +7,7 @@ import {
   Param,
   Delete,
 } from '@nestjs/common';
-import { ApiTags } from '@nestjs/swagger';
+import { ApiOperation, ApiTags } from '@nestjs/swagger';
 import { AccountService } from './account.service';
 import { CreateAccountDto } from './dto/create-account.dto';
 import { UpdateAccountDto } from './dto/update-account.dto';
@@ -18,27 +18,23 @@ export class AccountController {
   constructor(private readonly accountService: AccountService) {}
 
   @Post()
+  @ApiOperation({ summary: 'Link Bank to the user' })
   create(@Body() createAccountDto: CreateAccountDto) {
     return this.accountService.create(createAccountDto);
   }
 
-  @Get()
-  findAll() {
-    return this.accountService.findAll();
+  @Patch(':userId')
+  @ApiOperation({ summary: 'update user Account' })
+  update(
+    @Param('userId') userId: string,
+    @Body() updateAccountDto: UpdateAccountDto,
+  ) {
+    return this.accountService.update(userId, updateAccountDto);
   }
 
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.accountService.findOne(+id);
-  }
-
-  @Patch(':id')
-  update(@Param('id') id: string, @Body() updateAccountDto: UpdateAccountDto) {
-    return this.accountService.update(+id, updateAccountDto);
-  }
-
-  @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.accountService.remove(+id);
+  @Delete(':userId')
+  @ApiOperation({ summary: 'Delete user Account' })
+  remove(@Param('userId') id: string) {
+    return this.accountService.remove(id);
   }
 }

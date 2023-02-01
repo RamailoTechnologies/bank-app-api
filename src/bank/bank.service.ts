@@ -35,59 +35,24 @@ export class BankService {
   }
 
   async fetchUserBank(userId: string) {
-    const bankUserHave = await this.accountRepository
-      .createQueryBuilder('account')
-      .leftJoin('account.branch', 'BankBranch')
-      .leftJoin('BankBranch.bank', 'bank')
-      .leftJoin('account.user', 'user')
-      .where('user.userId = :userId', { userId })
-      .select(['account.accountId', 'bank.bankName', 'bank.logo'])
-      .getRawMany();
+    const bankUserHave = await this.bankRepository.find({
+      where: { account: { user: { userId } } },
+    });
 
     return bankUserHave;
   }
 
-  // async fetchBankBasedOnUser(userId: string) {
-  //   const BankUserHave = await this.bankRepository.find({
-  //     where: { branch: { account: { user: { userId } } } },
-  //     relations: {
-  //       branch: { account: { user: true } },
-  //     },
-  //   });
-
-  //   const BankUserNothave = await this.bankRepository.find({
-  //     where: { branch: { account: { user: { userId: Not(userId) } } } },
-  //     relations: {
-  //       branch: { account: { user: true } },
-  //     },
-  //   });
-  //   console.log(BankUserNothave);
-  //   console.log(BankUserHave);
-  //   return { BankUserHave, BankUserNothave };
-  // }
-
   async fetchBankBasedOnUser(userId: string) {
-    const bankUserHave = await this.accountRepository
-      .createQueryBuilder('account')
-      .leftJoin('account.branch', 'BankBranch')
-      .leftJoin('BankBranch.bank', 'bank')
-      .leftJoin('account.user', 'user')
-      .where('user.userId = :userId', { userId })
-      .select(['account.accountId', 'bank.bankName', 'bank.logo'])
-      .getRawMany();
+    const bankUserHave = await this.fetchUserBank(userId);
+    const banks = await this.bankRepository.find();
 
-    const bankUserNotHave = await this.accountRepository
-      .createQueryBuilder('account')
-      .leftJoin('account.branch', 'BankBranch')
-      .leftJoin('BankBranch.bank', 'bank')
-      .leftJoin('account.user', 'user')
-      .where('user.userId <> :userId', { userId })
-      .orWhere('user.userId is NULL')
-      .select(['bank.bankName', 'bank.logo'])
-      .getRawMany();
-    console.log(bankUserNotHave);
+    const bankUSerNotHave = banks.filter((bank) => {
+      return !bankUserHave.find((notRelatedBank) => {
+        return bank.bankId === notRelatedBank.bankId;
+      });
+    });
 
-    return { bankUserHave, bankUserNotHave };
+    return { bankUserHave, bankUSerNotHave };
   }
 
   async findOne(bankId: string) {

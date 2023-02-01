@@ -4,6 +4,7 @@ import {
   Entity,
   JoinColumn,
   ManyToOne,
+  OneToMany,
   OneToOne,
   PrimaryGeneratedColumn,
 } from 'typeorm';
@@ -24,11 +25,10 @@ export class BankBranch {
   ifsc: string;
 
   // relations
-
   @ManyToOne(() => Bank, (bank) => bank.branch)
   @JoinColumn()
   bank: Bank;
 
-  @OneToOne(() => Account, (account) => account.branch)
-  account: Account;
+  @OneToMany(() => Account, (account) => account.branch)
+  account: Account[];
 }

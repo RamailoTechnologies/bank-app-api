@@ -1,16 +1,15 @@
 import { Account } from 'src/account/entities/account.entity';
-import { Column, Entity, JoinColumn, OneToOne } from 'typeorm';
+import { Column, Entity, JoinColumn, OneToMany, OneToOne } from 'typeorm';
 
 @Entity('user')
 export class User {
-  @Column({ primary: true, unique: true })
+  @Column({ primary: true })
   userId: string;
 
-  @Column({ unique: true })
+  @Column()
   phone: string;
 
   // relations
-  @OneToOne(() => Account, (account) => account.user)
-  @JoinColumn()
+  @OneToMany(() => Account, (account) => account.user)
   account: Account;
 }

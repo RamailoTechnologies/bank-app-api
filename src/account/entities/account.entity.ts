@@ -5,6 +5,7 @@ import {
   Column,
   Entity,
   JoinColumn,
+  ManyToOne,
   OneToOne,
   PrimaryGeneratedColumn,
 } from 'typeorm';
@@ -14,21 +15,25 @@ export class Account {
   @PrimaryGeneratedColumn('uuid')
   accountId: string;
 
-  @Column()
+  @Column({ nullable: true })
   accountName: string;
 
-  @Column()
+  @Column({ nullable: true })
   accountNumber: string;
 
   @Column({ nullable: true })
   amount: string;
 
   //relations
-  @OneToOne(() => User, (user) => user.account)
+  @ManyToOne(() => User, (user) => user.account)
   @JoinColumn()
   user: User;
 
-  @OneToOne(() => BankBranch, (branch) => branch.account)
+  @ManyToOne(() => BankBranch, (branch) => branch.account)
   @JoinColumn()
   branch: BankBranch;
+
+  @ManyToOne(() => Bank, (bank) => bank.account)
+  @JoinColumn()
+  bank: Bank;
 }

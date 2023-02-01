@@ -4,6 +4,9 @@ import { SmsBanking } from 'src/sms-banking/entities/sms-banking.entity';
 import {
   Column,
   Entity,
+  JoinColumn,
+  JoinTable,
+  ManyToMany,
   ManyToOne,
   OneToMany,
   PrimaryGeneratedColumn,
@@ -34,4 +37,11 @@ export class Bank {
 
   @OneToMany(() => Offer, (offer) => offer.bank)
   offers: Offer[];
+
+  @OneToMany(() => Account, (account) => account.bank, {
+    cascade: true, // <= here
+    onDelete: 'CASCADE',
+    onUpdate: 'CASCADE',
+  })
+  account: Account[];
 }
