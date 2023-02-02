@@ -17,11 +17,11 @@ export class CreateAccountDto {
     type: 'string',
     example: 'a0f0aff5-de9a-44ba-8ae5-0404a873dfaf',
   })
-  branchId?: string;
+  branchIfsc?: string;
 
   @ApiProperty({
-    type: 'string',
+    type: 'array',
     example: 'a0f0aff5-de9a-44ba-8ae5-0404a873dfaf',
   })
-  bankId: string;
+  bankId: [];
 }

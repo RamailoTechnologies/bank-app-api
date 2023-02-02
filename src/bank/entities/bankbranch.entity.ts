@@ -6,23 +6,21 @@ import {
   ManyToOne,
   OneToMany,
   OneToOne,
+  PrimaryColumn,
   PrimaryGeneratedColumn,
 } from 'typeorm';
 import { Bank } from './bank.entity';
 
 @Entity('Bankbranch')
 export class BankBranch {
-  @PrimaryGeneratedColumn('uuid')
-  branchId: string;
+  @PrimaryColumn()
+  branchIfsc: string;
 
   @Column()
   branchName: string;
 
   @Column()
   address: string;
-
-  @Column()
-  ifsc: string;
 
   // relations
   @ManyToOne(() => Bank, (bank) => bank.branch)

@@ -11,3 +11,12 @@ export const DB = {
   password: process.env.DB_PASSWORD,
   database: process.env.DB_DATABASE,
 };
+
+// for server
+// export const DB = {
+//   host: 'localhost',
+//   port: 5432,
+//   username: 'postgres',
+//   password: 'postgres',
+//   database: 'ifsc',
+// };

@@ -9,6 +9,7 @@ import { BankModule } from './bank/bank.module';
 import { AccountModule } from './account/account.module';
 import { SmsBankingModule } from './sms-banking/sms-banking.module';
 import { OffersModule } from './offers/offers.module';
+import { IfscModule } from './ifsc/ifsc.module';
 
 @Module({
   imports: [
@@ -31,6 +32,7 @@ import { OffersModule } from './offers/offers.module';
     AccountModule,
     SmsBankingModule,
     OffersModule,
+    IfscModule,
   ],
   controllers: [AppController],
   providers: [AppService],

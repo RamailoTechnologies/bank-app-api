@@ -13,25 +13,35 @@ export class AccountService {
     private readonly accountRepository: Repository<Account>,
   ) {}
   async create(createAccountDto: CreateAccountDto) {
-    const { userId, bankId, branchId } = createAccountDto;
+    const { userId, bankId, branchIfsc } = createAccountDto;
     delete createAccountDto.userId;
     delete createAccountDto.bankId;
-    const datas = await this.accountRepository.save({
-      ...createAccountDto,
-      user: { userId },
-      branchId,
-      bank: { bankId },
+    const data = bankId.map(async (eachId) => {
+      const datas = await this.accountRepository.save({
+        ...createAccountDto,
+        user: { userId },
+        branchIfsc,
+        bank: { bankId: eachId },
+      });
     });
 
-    return datas;
+    return data;
   }
 
   async update(userId: string, updateAccountDto: UpdateAccountDto) {
-    const { bankId } = updateAccountDto;
-    return await this.accountRepository.update(
-      { user: { userId } },
-      { ...updateAccountDto, bank: { bankId } },
-    );
+    const { bankId, branchIfsc } = updateAccountDto;
+    const data = bankId.map(async (eachId) => {
+      const datas = await this.accountRepository.update(
+        { user: { userId } },
+        {
+          ...updateAccountDto,
+          user: { userId },
+          branch: { branchIfsc },
+          bank: { bankId: eachId },
+        },
+      );
+    });
+    return data;
   }
 
   async remove(userId: string) {

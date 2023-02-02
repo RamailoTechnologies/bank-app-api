@@ -64,7 +64,7 @@ export class BankService {
   }
   async updateBranch(branchId: string, updateBankBranchDto: UpdateBankBranch) {
     return await this.bankBranchRepository.update(
-      { branchId },
+      { branchIfsc: branchId },
       { ...updateBankBranchDto },
     );
   }

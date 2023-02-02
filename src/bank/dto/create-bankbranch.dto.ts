@@ -6,5 +6,5 @@ export class CreateBankBranchDto {
   @ApiProperty({ type: 'string' })
   address: string;
   @ApiProperty({ type: 'string' })
-  ifsc: string;
+  branchIfsc: string;
 }
