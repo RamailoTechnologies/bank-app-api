@@ -7,7 +7,7 @@ import {
   Param,
   Delete,
 } from '@nestjs/common';
-import { ApiOperation, ApiTags } from '@nestjs/swagger';
+import { ApiBody, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { AccountService } from './account.service';
 import { CreateAccountDto } from './dto/create-account.dto';
 import { UpdateAccountDto } from './dto/update-account.dto';
@@ -19,12 +19,13 @@ export class AccountController {
 
   @Post()
   @ApiOperation({ summary: 'Link Bank to the user' })
+  @ApiBody({ type: CreateAccountDto })
   create(@Body() createAccountDto: CreateAccountDto) {
     return this.accountService.create(createAccountDto);
   }
 
   @Get(':userId')
-  @ApiOperation({ summary: 'Link Bank to the user' })
+  @ApiOperation({ summary: 'fetch accounts of user' })
   getaccount(@Param('userId') userId: string) {
     return this.accountService.find(userId);
   }

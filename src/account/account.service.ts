@@ -59,11 +59,25 @@ export class AccountService {
     }
   }
 
+  // async find(userId: string) {
+  //   return await this.accountRepository.find({
+  //     where: { user: { userId } },
+  //     relations: { bank: true, branch: true },
+  //   });
+  // }
+
   async find(userId: string) {
-    return await this.accountRepository.find({
-      where: { user: { userId } },
-      relations: { bank: true, branch: true },
-    });
+    // return await this.accountRepository.find({
+    //   where: { user: { userId } },
+    //   relations: { bank: true, branch: true },
+    // });
+    return await this.accountRepository
+      .createQueryBuilder('account')
+      .leftJoinAndSelect('account.user', 'user')
+      .leftJoinAndSelect('account.bank', 'bank')
+      .leftJoinAndSelect('account.branch', 'branch')
+      .where('user.userId = :userId', { userId })
+      .getMany();
   }
 
   async remove(userId: string) {

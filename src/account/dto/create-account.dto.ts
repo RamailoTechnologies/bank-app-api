@@ -22,7 +22,7 @@ export class CreateAccountDto {
 
   @ApiProperty({
     type: 'array',
-    example: "['a0f0aff5-de9a-44ba-8ae5-0404a873dfaf']",
+    example: ['asdasdasd'],
   })
-  bankId: [];
+  bankId: [string];
 }
