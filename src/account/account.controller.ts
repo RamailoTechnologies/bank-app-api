@@ -23,13 +23,19 @@ export class AccountController {
     return this.accountService.create(createAccountDto);
   }
 
-  @Patch(':userId')
+  @Get(':userId')
+  @ApiOperation({ summary: 'Link Bank to the user' })
+  getaccount(@Param('userId') userId: string) {
+    return this.accountService.find(userId);
+  }
+
+  @Patch(':accountId')
   @ApiOperation({ summary: 'update user Account' })
   update(
-    @Param('userId') userId: string,
+    @Param('accountId') accountId: string,
     @Body() updateAccountDto: UpdateAccountDto,
   ) {
-    return this.accountService.update(userId, updateAccountDto);
+    return this.accountService.update(accountId, updateAccountDto);
   }
 
   @Delete(':userId')
