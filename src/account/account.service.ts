@@ -1,6 +1,12 @@
-import { BadRequestException, Injectable } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Bank } from 'src/bank/entities/bank.entity';
+import { BankBranch } from 'src/bank/entities/bankbranch.entity';
+import { User } from 'src/user/entities/user.entity';
 import { Repository } from 'typeorm';
 import { CreateAccountDto } from './dto/create-account.dto';
 import { UpdateAccountDto } from './dto/update-account.dto';
@@ -11,29 +17,51 @@ export class AccountService {
   constructor(
     @InjectRepository(Account)
     private readonly accountRepository: Repository<Account>,
+    @InjectRepository(User) private readonly userRepository: Repository<User>,
+    @InjectRepository(Bank) private readonly bankRepository: Repository<Bank>,
+    @InjectRepository(BankBranch)
+    private readonly bankbranchRepository: Repository<BankBranch>,
   ) {}
   async create(createAccountDto: CreateAccountDto) {
-    const { userId, bankId, branchIfsc } = createAccountDto;
+    try {
+      const { userId, bankId, branchIfsc } = createAccountDto;
+      const bankData = await this.find(userId);
 
-    const bankData = await this.find(userId);
-
-    delete createAccountDto.userId;
-    delete createAccountDto.bankId;
-    bankData.map((eachBank) => {
-      if (bankId.includes(eachBank.bank.bankId)) {
-        throw new BadRequestException('This user has already this bank ');
-      }
-    });
-    const data = bankId.map(async (eachId) => {
-      const datas = await this.accountRepository.save({
-        ...createAccountDto,
-        user: { userId },
-        branchIfsc,
-        bank: { bankId: eachId },
+      delete createAccountDto.userId;
+      delete createAccountDto.bankId;
+      bankData.map((eachBank) => {
+        if (bankId.includes(eachBank.bank.bankId)) {
+          throw new BadRequestException('This user has already this bank ');
+        }
       });
-    });
 
-    return data;
+      const checkUser = await this.userRepository.findBy({ userId });
+      if (!checkUser) throw new NotFoundException('User Not Found');
+
+      const checkbranch = await this.bankbranchRepository.findBy({
+        branchIfsc,
+      });
+      if (!checkbranch) throw new NotFoundException('Bank Branch Not Found');
+
+      const data = bankId.map(async (eachId) => {
+        const checkbank = await this.bankRepository.find({
+          where: { bankId: eachId },
+        });
+        if (!checkbank) throw new NotFoundException('Bank Not Found');
+
+        const datas = await this.accountRepository.save({
+          ...createAccountDto,
+          user: { userId },
+          branchIfsc,
+          bank: { bankId: eachId },
+        });
+      });
+
+      return data;
+    } catch (err) {
+      console.log(err);
+      throw new Error(err);
+    }
   }
 
   async update(accountId: string, updateAccountDto: UpdateAccountDto) {
