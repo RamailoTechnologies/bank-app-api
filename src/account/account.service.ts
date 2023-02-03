@@ -4,6 +4,7 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
+import { NotFoundError } from 'rxjs';
 import { Bank } from 'src/bank/entities/bank.entity';
 import { BankBranch } from 'src/bank/entities/bankbranch.entity';
 import { User } from 'src/user/entities/user.entity';
@@ -27,15 +28,16 @@ export class AccountService {
       const { userId, bankId, branchIfsc } = createAccountDto;
       const checkUser = await this.userRepository.findBy({ userId });
       if (!checkUser) throw new NotFoundException('User Not Found');
-
       const checkbranch = await this.bankbranchRepository.findBy({
         branchIfsc,
       });
       if (!checkbranch) throw new NotFoundException('Bank Branch Not Found');
+
       const bankcheck = bankId.map(async (eachId) => {
         const checkbank = await this.bankRepository.find({
           where: { bankId: eachId },
         });
+
         if (!checkbank) throw new NotFoundException('Bank Not Found');
       });
 
@@ -60,8 +62,8 @@ export class AccountService {
 
       return data;
     } catch (err) {
-      console.log(err);
-      throw new BadRequestException(err.driverError.detail);
+      console.error(err);
+      throw new BadRequestException();
     }
   }
 
