@@ -15,7 +15,7 @@ export class Bank {
   @Column()
   logo: string;
 
-  @Column()
+  @Column({ nullable: true })
   customerCareNumber: string;
 
   //relations
