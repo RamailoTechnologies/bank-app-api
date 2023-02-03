@@ -14,6 +14,9 @@ export class AccountService {
   ) {}
   async create(createAccountDto: CreateAccountDto) {
     const { userId, bankId, branchIfsc } = createAccountDto;
+
+    const bankData = await this.find(userId);
+    console.log(bankData);
     delete createAccountDto.userId;
     delete createAccountDto.bankId;
     const data = bankId.map(async (eachId) => {
@@ -21,7 +24,7 @@ export class AccountService {
         ...createAccountDto,
         user: { userId },
         branchIfsc,
-        bankId: eachId,
+        bank: { bankId: eachId },
       });
     });
 
