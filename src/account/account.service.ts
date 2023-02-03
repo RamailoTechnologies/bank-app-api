@@ -16,9 +16,14 @@ export class AccountService {
     const { userId, bankId, branchIfsc } = createAccountDto;
 
     const bankData = await this.find(userId);
-    console.log(bankData);
+
     delete createAccountDto.userId;
     delete createAccountDto.bankId;
+    bankData.map((eachBank) => {
+      if (bankId.includes(eachBank.bank.bankId)) {
+        throw new BadRequestException('This user has already this bank ');
+      }
+    });
     const data = bankId.map(async (eachId) => {
       const datas = await this.accountRepository.save({
         ...createAccountDto,
