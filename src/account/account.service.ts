@@ -25,6 +25,20 @@ export class AccountService {
   async create(createAccountDto: CreateAccountDto) {
     try {
       const { userId, bankId, branchIfsc } = createAccountDto;
+      const checkUser = await this.userRepository.findBy({ userId });
+      if (!checkUser) throw new NotFoundException('User Not Found');
+
+      const checkbranch = await this.bankbranchRepository.findBy({
+        branchIfsc,
+      });
+      if (!checkbranch) throw new NotFoundException('Bank Branch Not Found');
+      const bankcheck = bankId.map(async (eachId) => {
+        const checkbank = await this.bankRepository.find({
+          where: { bankId: eachId },
+        });
+        if (!checkbank) throw new NotFoundException('Bank Not Found');
+      });
+
       const bankData = await this.find(userId);
 
       delete createAccountDto.userId;
@@ -35,20 +49,7 @@ export class AccountService {
         }
       });
 
-      const checkUser = await this.userRepository.findBy({ userId });
-      if (!checkUser) throw new NotFoundException('User Not Found');
-
-      const checkbranch = await this.bankbranchRepository.findBy({
-        branchIfsc,
-      });
-      if (!checkbranch) throw new NotFoundException('Bank Branch Not Found');
-
       const data = bankId.map(async (eachId) => {
-        const checkbank = await this.bankRepository.find({
-          where: { bankId: eachId },
-        });
-        if (!checkbank) throw new NotFoundException('Bank Not Found');
-
         const datas = await this.accountRepository.save({
           ...createAccountDto,
           user: { userId },
@@ -60,7 +61,7 @@ export class AccountService {
       return data;
     } catch (err) {
       console.log(err);
-      throw new Error(err);
+      throw new BadRequestException(err.driverError.detail);
     }
   }
 
@@ -91,6 +92,7 @@ export class AccountService {
         return data;
       }
     } catch (err) {
+      console.log(err);
       throw new BadRequestException(err.driverError.detail);
     }
   }
