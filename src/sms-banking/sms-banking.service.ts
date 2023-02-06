@@ -13,7 +13,7 @@ export class SmsBankingService {
   ) {}
   async create(createSmsBankingDto: CreateSmsBankingDto, bankId: string) {
     return await this.smsBankingRepository.save({
-      ...CreateSmsBankingDto,
+      ...createSmsBankingDto,
       bank: { bankId },
     });
   }
