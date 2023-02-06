@@ -20,7 +20,7 @@ export class SmsBanking {
   @PrimaryGeneratedColumn('uuid')
   serviceId: string;
 
-  @Column()
+  @Column({ nullable: true })
   smsServiceNumber: string;
 
   @Column({
