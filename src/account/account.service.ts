@@ -7,6 +7,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { NotFoundError } from 'rxjs';
 import { Bank } from 'src/bank/entities/bank.entity';
 import { BankBranch } from 'src/bank/entities/bankbranch.entity';
+import { IFSC } from 'src/ifsc/entities/ifsc.entity';
 import { User } from 'src/user/entities/user.entity';
 import { Repository } from 'typeorm';
 import { CreateAccountDto } from './dto/create-account.dto';
@@ -22,30 +23,26 @@ export class AccountService {
     @InjectRepository(Bank) private readonly bankRepository: Repository<Bank>,
     @InjectRepository(BankBranch)
     private readonly bankbranchRepository: Repository<BankBranch>,
+    @InjectRepository(IFSC)
+    private readonly ifscRepository: Repository<IFSC>,
   ) {}
   async create(createAccountDto: CreateAccountDto) {
     try {
-      const { userId, bankId, branchIfsc } = createAccountDto;
+      const { userId, bankId } = createAccountDto;
       const checkUser = await this.userRepository.findBy({ userId });
       if (!checkUser) throw new NotFoundException('User Not Found');
-      const checkbranch = await this.bankbranchRepository.findBy({
-        branchIfsc,
-      });
-      if (!checkbranch) throw new NotFoundException('Bank Branch Not Found');
 
       const bankcheck = bankId.map(async (eachId) => {
         const checkbank = await this.bankRepository.find({
           where: { bankId: eachId },
         });
-
         if (!checkbank) throw new NotFoundException('Bank Not Found');
       });
 
       const bankData = await this.find(userId);
 
-      delete createAccountDto.userId;
-      delete createAccountDto.bankId;
       bankData.map((eachBank) => {
+        console.log(eachBank.bank);
         if (bankId.includes(eachBank.bank.bankId)) {
           throw new BadRequestException('This user has already this bank ');
         }
@@ -55,7 +52,6 @@ export class AccountService {
         const datas = await this.accountRepository.save({
           ...createAccountDto,
           user: { userId },
-          branchIfsc,
           bank: { bankId: eachId },
         });
       });
@@ -68,49 +64,24 @@ export class AccountService {
   }
 
   async update(accountId: string, updateAccountDto: UpdateAccountDto) {
-    const { bankId, branchIfsc } = updateAccountDto;
-    console.log(branchIfsc);
-    delete updateAccountDto.branchIfsc;
+    const { branchIfsc, ...rest } = updateAccountDto;
+    const addBranch = await this.checkAndaddBranch(branchIfsc, accountId);
     try {
-      if (!bankId) {
-        const datas = await this.accountRepository.update(
-          { accountId },
-          {
-            ...updateAccountDto,
-            branch: { branchIfsc },
-          },
-        );
-        return datas;
-      } else {
-        const data = bankId.map(async (eachId) => {
-          const datas = await this.accountRepository.update(
-            { accountId },
-            {
-              ...updateAccountDto,
-              branch: { branchIfsc },
-            },
-          );
-        });
-        return data;
-      }
+      const data = await this.accountRepository.update(
+        { accountId },
+        {
+          ...rest,
+          branch: { branchIfsc },
+        },
+      );
+      return { data, AddedBranch: addBranch };
     } catch (err) {
       console.log(err);
-      throw new BadRequestException(err.driverError.detail);
+      throw new BadRequestException(err.driverError);
     }
   }
 
-  // async find(userId: string) {
-  //   return await this.accountRepository.find({
-  //     where: { user: { userId } },
-  //     relations: { bank: true, branch: true },
-  //   });
-  // }
-
   async find(userId: string) {
-    // return await this.accountRepository.find({
-    //   where: { user: { userId } },
-    //   relations: { bank: true, branch: true },
-    // });
     return await this.accountRepository
       .createQueryBuilder('account')
       .leftJoinAndSelect('account.user', 'user')
@@ -122,5 +93,40 @@ export class AccountService {
 
   async remove(userId: string) {
     return await this.accountRepository.delete({ user: { userId } });
+  }
+
+  async checkAndaddBranch(branchIfsc: string, accountId: string) {
+    const userAccount = await this.accountRepository.findOne({
+      where: { accountId },
+      relations: { bank: true },
+    });
+    const userBankId = userAccount.bank.bankId;
+    const checkOnBranch = await this.bankbranchRepository.findOne({
+      where: { branchIfsc },
+    });
+    if (checkOnBranch) {
+      return branchIfsc;
+    } else {
+      const findDetails = await this.ifscRepository.findOneBy({
+        ifsc: branchIfsc,
+      });
+      if (!findDetails)
+        throw new NotFoundException(
+          'Ifsc Code Didnt Matched on the Ifsc Database',
+        );
+      const state = findDetails.state;
+      const city = findDetails.city;
+      const address = findDetails.address;
+      const branchName = findDetails.branch;
+      const addBranch = await this.bankbranchRepository.save({
+        branchIfsc,
+        state,
+        city,
+        address,
+        branchName,
+        bank: { bankId: userBankId },
+      });
+      return addBranch;
+    }
   }
 }

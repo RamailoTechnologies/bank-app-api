@@ -20,6 +20,12 @@ export class BankBranch {
   branchName: string;
 
   @Column()
+  city: string;
+
+  @Column()
+  state: string;
+
+  @Column()
   address: string;
 
   // relations
