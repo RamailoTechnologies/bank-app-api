@@ -39,7 +39,7 @@ export class Offer {
   updatedAt: Date;
 
   @Column({ type: 'enum', enum: loanCategory })
-  categoty: loanCategory;
+  category: loanCategory;
 
   // relations
   @ManyToOne(() => Bank, (bank) => bank.offers)
