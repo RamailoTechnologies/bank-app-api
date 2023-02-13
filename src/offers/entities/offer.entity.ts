@@ -8,6 +8,13 @@ import {
   PrimaryGeneratedColumn,
 } from 'typeorm';
 
+export enum loanCategory {
+  PEROSNAL_LOAN = 'personalLoan',
+  CREDIT_CARD = 'creditCard',
+  ACCOUNT_OPENING = 'accountOpening',
+  HOME_LOAN = 'homeLoan',
+}
+
 @Entity('offers')
 export class Offer {
   @PrimaryGeneratedColumn('uuid')
@@ -30,6 +37,9 @@ export class Offer {
 
   @CreateDateColumn()
   updatedAt: Date;
+
+  @Column({ type: 'enum', enum: loanCategory })
+  categoty: loanCategory;
 
   // relations
   @ManyToOne(() => Bank, (bank) => bank.offers)

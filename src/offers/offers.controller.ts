@@ -19,7 +19,10 @@ export class OffersController {
 
   @Post(':bankId')
   @ApiOperation({ summary: 'Insert offer Provided by bank ' })
-  create(@Body() createOfferDto: CreateOfferDto, bankId: string) {
+  create(
+    @Body() createOfferDto: CreateOfferDto,
+    @Param('bankId') bankId: string,
+  ) {
     return this.offersService.create(createOfferDto, bankId);
   }
 

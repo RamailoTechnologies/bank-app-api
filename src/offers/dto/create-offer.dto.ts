@@ -1,4 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
+import { loanCategory } from '../entities/offer.entity';
 
 export class CreateOfferDto {
   @ApiProperty({ type: 'string' })
@@ -9,4 +10,6 @@ export class CreateOfferDto {
   offerLink: string;
   @ApiProperty({ type: 'date' })
   offerValidTill: Date;
+  @ApiProperty({ type: 'string', enum: loanCategory })
+  category: loanCategory;
 }
