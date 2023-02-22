@@ -1,5 +1,4 @@
 import { Bank } from 'src/bank/entities/bank.entity';
-import { BankBranch } from 'src/bank/entities/bankbranch.entity';
 import { User } from 'src/user/entities/user.entity';
 import {
   Column,
@@ -24,14 +23,13 @@ export class Account {
   @Column({ nullable: true })
   amount: string;
 
+  @Column({ nullable: true })
+  ifsc: string;
+
   //relations
   @ManyToOne(() => User, (user) => user.account)
   @JoinColumn()
   user: User;
-
-  @ManyToOne(() => BankBranch, (branch) => branch.account)
-  @JoinColumn()
-  branch: BankBranch;
 
   @ManyToOne(() => Bank, (bank) => bank.account)
   @JoinColumn()

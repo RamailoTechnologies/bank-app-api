@@ -7,14 +7,6 @@ import {
   PrimaryGeneratedColumn,
 } from 'typeorm';
 
-export enum smsBankingFormate {
-  BALANCEENQUIRY = 'balanceenquiry',
-  MINISTATEMENT = 'ministatement',
-  STOPCHEQUE = 'stopcheque',
-  CHECKSTATUS = 'checkstatus',
-  CHANGEMPIN = 'changempin',
-}
-
 @Entity('smsBanking')
 export class SmsBanking {
   @PrimaryGeneratedColumn('uuid')
@@ -24,10 +16,9 @@ export class SmsBanking {
   smsServiceNumber: string;
 
   @Column({
-    type: 'enum',
-    enum: smsBankingFormate,
+    nullable: true,
   })
-  category: smsBankingFormate;
+  category: string;
 
   @Column({ nullable: true })
   callServiceNumber: string;

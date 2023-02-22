@@ -4,30 +4,20 @@ import { notEqual } from 'assert';
 import { Account } from 'src/account/entities/account.entity';
 import { Not, Repository } from 'typeorm';
 import { CreateBankDto } from './dto/create-bank.dto';
-import { CreateBankBranchDto } from './dto/create-bankbranch.dto';
+
 import { UpdateBankDto } from './dto/update-bank.dto';
-import { UpdateBankBranch } from './dto/update-bankBranch.dto';
 import { Bank } from './entities/bank.entity';
-import { BankBranch } from './entities/bankbranch.entity';
 
 @Injectable()
 export class BankService {
   constructor(
     @InjectRepository(Bank) private readonly bankRepository: Repository<Bank>,
-    @InjectRepository(BankBranch)
-    private readonly bankBranchRepository: Repository<BankBranch>,
+
     @InjectRepository(Account)
     private readonly accountRepository: Repository<Account>,
   ) {}
   async create(createBankDto: CreateBankDto) {
     return await this.bankRepository.save(createBankDto);
-  }
-
-  async createBranch(createBankBranchDto: CreateBankBranchDto, bankId: string) {
-    return await this.bankBranchRepository.save({
-      ...createBankBranchDto,
-      bank: { bankId },
-    });
   }
 
   findAll() {
@@ -61,12 +51,6 @@ export class BankService {
 
   async update(bankId: string, updateBankDto: UpdateBankDto) {
     return await this.bankRepository.update({ bankId }, { ...updateBankDto });
-  }
-  async updateBranch(branchId: string, updateBankBranchDto: UpdateBankBranch) {
-    return await this.bankBranchRepository.update(
-      { branchIfsc: branchId },
-      { ...updateBankBranchDto },
-    );
   }
 
   async remove(bankId: string) {

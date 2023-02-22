@@ -12,5 +12,5 @@ export class UpdateAccountDto {
     type: 'string',
     example: 'a0f0aff5-de9a-44ba-8ae5-0404a873dfaf',
   })
-  branchIfsc?: string;
+  ifsc?: string;
 }

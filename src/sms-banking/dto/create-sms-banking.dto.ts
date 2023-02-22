@@ -1,13 +1,20 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { smsBankingFormate } from '../entities/sms-banking.entity';
+import { IsString } from 'class-validator';
 
 export class CreateSmsBankingDto {
+  @IsString()
   @ApiProperty({ type: 'string' })
   smsServiceNumber: string;
-  @ApiProperty({ type: 'string', enum: smsBankingFormate })
-  category: smsBankingFormate;
+
+  @IsString()
+  @ApiProperty({ type: 'string' })
+  category: string;
+
+  @IsString()
   @ApiProperty({ type: 'string' })
   callServiceNumber: string;
+
+  @IsString()
   @ApiProperty({ type: 'string' })
   smsPattern: string;
 }

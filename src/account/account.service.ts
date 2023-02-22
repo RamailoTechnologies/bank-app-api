@@ -4,10 +4,7 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { NotFoundError } from 'rxjs';
 import { Bank } from 'src/bank/entities/bank.entity';
-import { BankBranch } from 'src/bank/entities/bankbranch.entity';
-import { IFSC } from 'src/ifsc/entities/ifsc.entity';
 import { User } from 'src/user/entities/user.entity';
 import { Repository } from 'typeorm';
 import { CreateAccountDto } from './dto/create-account.dto';
@@ -22,10 +19,6 @@ export class AccountService {
     private readonly accountRepository: Repository<Account>,
     @InjectRepository(User) private readonly userRepository: Repository<User>,
     @InjectRepository(Bank) private readonly bankRepository: Repository<Bank>,
-    @InjectRepository(BankBranch)
-    private readonly bankbranchRepository: Repository<BankBranch>,
-    @InjectRepository(IFSC)
-    private readonly ifscRepository: Repository<IFSC>,
   ) {}
 
   async create(createAccountDto: CreateAccountDto) {
@@ -66,17 +59,12 @@ export class AccountService {
   }
 
   async update(accountId: string, updateAccountDto: UpdateAccountDto) {
-    const { branchIfsc, ...rest } = updateAccountDto;
-    const addBranch = await this.checkAndaddBranch(branchIfsc, accountId);
     try {
       const data = await this.accountRepository.update(
         { accountId },
-        {
-          ...rest,
-          branch: { branchIfsc },
-        },
+        updateAccountDto,
       );
-      return { data, AddedBranch: addBranch };
+      return { data };
     } catch (err) {
       console.log(err);
       throw new BadRequestException(err.driverError);
@@ -88,7 +76,6 @@ export class AccountService {
       .createQueryBuilder('account')
       .leftJoinAndSelect('account.user', 'user')
       .leftJoinAndSelect('account.bank', 'bank')
-      .leftJoinAndSelect('account.branch', 'branch')
       .where('user.userId = :userId', { userId })
       .getMany();
   }
@@ -116,41 +103,6 @@ export class AccountService {
       return { message: `${accountId} was deleted` };
     } catch (err) {
       console.log(err);
-    }
-  }
-
-  async checkAndaddBranch(branchIfsc: string, accountId: string) {
-    const userAccount = await this.accountRepository.findOne({
-      where: { accountId },
-      relations: { bank: true },
-    });
-    const userBankId = userAccount.bank.bankId;
-    const checkOnBranch = await this.bankbranchRepository.findOne({
-      where: { branchIfsc },
-    });
-    if (checkOnBranch) {
-      return branchIfsc;
-    } else {
-      const findDetails = await this.ifscRepository.findOneBy({
-        ifsc: branchIfsc,
-      });
-      if (!findDetails)
-        throw new NotFoundException(
-          'Ifsc Code Didnt Matched on the Ifsc Database',
-        );
-      const state = findDetails.state;
-      const city = findDetails.city;
-      const address = findDetails.address;
-      const branchName = findDetails.branch;
-      const addBranch = await this.bankbranchRepository.save({
-        branchIfsc,
-        state,
-        city,
-        address,
-        branchName,
-        bank: { bankId: userBankId },
-      });
-      return addBranch;
     }
   }
 }

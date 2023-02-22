@@ -10,9 +10,8 @@ import {
 import { ApiBody, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { BankService } from './bank.service';
 import { CreateBankDto } from './dto/create-bank.dto';
-import { CreateBankBranchDto } from './dto/create-bankbranch.dto';
+
 import { UpdateBankDto } from './dto/update-bank.dto';
-import { UpdateBankBranch } from './dto/update-bankBranch.dto';
 
 @ApiTags('Bank')
 @Controller('bank')
@@ -24,16 +23,6 @@ export class BankController {
   @ApiBody({ type: CreateBankDto })
   create(@Body() createBankDto: CreateBankDto) {
     return this.bankService.create(createBankDto);
-  }
-
-  @Post('branch/:bankId')
-  @ApiOperation({ summary: 'Add Bank branch' })
-  @ApiBody({ type: CreateBankBranchDto })
-  createBranch(
-    @Body() createBankBranchDto: CreateBankBranchDto,
-    @Param('bankId') bankId: string,
-  ) {
-    return this.bankService.createBranch(createBankBranchDto, bankId);
   }
 
   @Get(':userId')
@@ -66,15 +55,6 @@ export class BankController {
     @Body() updateBankDto: UpdateBankDto,
   ) {
     return this.bankService.update(bankId, updateBankDto);
-  }
-
-  @Patch(':branchId')
-  @ApiOperation({ summary: 'edit Bank details' })
-  updateBranch(
-    @Param('branchId') branchId: string,
-    @Body() updateBankBranch: UpdateBankBranch,
-  ) {
-    return this.bankService.updateBranch(branchId, updateBankBranch);
   }
 
   @Delete(':bankId')
