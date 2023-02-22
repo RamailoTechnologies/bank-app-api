@@ -11,6 +11,7 @@ import { IFSC } from 'src/ifsc/entities/ifsc.entity';
 import { User } from 'src/user/entities/user.entity';
 import { Repository } from 'typeorm';
 import { CreateAccountDto } from './dto/create-account.dto';
+import { DeleteAccountDto } from './dto/delete-account.dto';
 import { UpdateAccountDto } from './dto/update-account.dto';
 import { Account } from './entities/account.entity';
 
@@ -26,6 +27,7 @@ export class AccountService {
     @InjectRepository(IFSC)
     private readonly ifscRepository: Repository<IFSC>,
   ) {}
+
   async create(createAccountDto: CreateAccountDto) {
     try {
       const { userId, bankId } = createAccountDto;
@@ -95,8 +97,26 @@ export class AccountService {
     return await this.accountRepository.delete({ user: { userId } });
   }
 
-  async removeBank(accountId: string) {
-    return await this.accountRepository.delete(accountId);
+  async removeBank(deleteAccountDto: DeleteAccountDto) {
+    try {
+      const { accountId } = deleteAccountDto;
+
+      const account = await accountId.map(async (eachId) => {
+        const checkAccount = await this.accountRepository.findOne({
+          where: { accountId: eachId },
+        });
+        if (checkAccount) {
+          await this.accountRepository.delete(accountId);
+          console.log('deleted', eachId);
+          return { message: `${accountId} was deleted` };
+        } else {
+          throw new BadRequestException(`${eachId} account doesnot Exist`);
+        }
+      });
+      return { message: `${accountId} was deleted` };
+    } catch (err) {
+      console.log(err);
+    }
   }
 
   async checkAndaddBranch(branchIfsc: string, accountId: string) {

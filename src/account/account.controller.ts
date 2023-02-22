@@ -10,6 +10,7 @@ import {
 import { ApiBody, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { AccountService } from './account.service';
 import { CreateAccountDto } from './dto/create-account.dto';
+import { DeleteAccountDto } from './dto/delete-account.dto';
 import { UpdateAccountDto } from './dto/update-account.dto';
 
 @ApiTags('Account')
@@ -39,10 +40,11 @@ export class AccountController {
     return this.accountService.update(accountId, updateAccountDto);
   }
 
-  @Patch(':accountId')
+  @Post('/delete')
   @ApiOperation({ summary: 'remove Individual bank of user' })
-  removeBank(@Param('accountId') accountId: string) {
-    return this.accountService.removeBank(accountId);
+  @ApiBody({ type: DeleteAccountDto })
+  removeBank(@Body() deleteAccountDto: DeleteAccountDto) {
+    return this.accountService.removeBank(deleteAccountDto);
   }
 
   @Delete(':userId')
