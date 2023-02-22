@@ -95,6 +95,10 @@ export class AccountService {
     return await this.accountRepository.delete({ user: { userId } });
   }
 
+  async removeBank(accountId: string) {
+    return await this.accountRepository.delete(accountId);
+  }
+
   async checkAndaddBranch(branchIfsc: string, accountId: string) {
     const userAccount = await this.accountRepository.findOne({
       where: { accountId },

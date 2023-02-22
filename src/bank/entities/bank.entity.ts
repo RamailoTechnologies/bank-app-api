@@ -15,6 +15,9 @@ export class Bank {
   @Column()
   logo: string;
 
+  @Column({ nullable: true, default: false })
+  isPopular: boolean;
+
   @Column({ nullable: true })
   customerCareNumber: string;
 

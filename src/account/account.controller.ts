@@ -39,8 +39,14 @@ export class AccountController {
     return this.accountService.update(accountId, updateAccountDto);
   }
 
+  @Patch(':accountId')
+  @ApiOperation({ summary: 'remove Individual bank of user' })
+  removeBank(@Param('accountId') accountId: string) {
+    return this.accountService.removeBank(accountId);
+  }
+
   @Delete(':userId')
-  @ApiOperation({ summary: 'Delete user Account' })
+  @ApiOperation({ summary: 'Delete all Account of user ' })
   remove(@Param('userId') id: string) {
     return this.accountService.remove(id);
   }
