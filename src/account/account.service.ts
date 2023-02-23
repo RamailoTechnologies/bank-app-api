@@ -28,7 +28,7 @@ export class AccountService {
       if (!checkUser) throw new NotFoundException('User Not Found');
 
       const bankcheck = bankId.map(async (eachId) => {
-        const checkbank = await this.bankRepository.find({
+        const checkbank = await this.bankRepository.findOne({
           where: { bankId: eachId },
         });
         if (!checkbank) throw new NotFoundException('Bank Not Found');
