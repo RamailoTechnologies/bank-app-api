@@ -28,9 +28,7 @@ export class AccountService {
       if (!checkUser) throw new NotFoundException('User Not Found');
 
       const bankcheck = bankId.map(async (eachId) => {
-        const checkbank = await this.bankRepository.findOne({
-          where: { bankId: eachId },
-        });
+        const checkbank = await this.bankRepository.findBy({ bankId: eachId });
         if (!checkbank) throw new NotFoundException('Bank Not Found');
       });
 
@@ -50,6 +48,7 @@ export class AccountService {
           user: { userId },
           bank: { bankId: eachId },
         });
+        return datas;
       });
 
       return data;
@@ -88,7 +87,6 @@ export class AccountService {
   async removeBank(deleteAccountDto: DeleteAccountDto) {
     try {
       const { accountId } = deleteAccountDto;
-
       const account = await accountId.map(async (eachId) => {
         const checkAccount = await this.accountRepository.findOne({
           where: { accountId: eachId },

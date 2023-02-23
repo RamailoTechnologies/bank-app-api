@@ -2,46 +2,46 @@ import { Column, Entity, PrimaryColumn } from 'typeorm';
 
 @Entity('ifsc')
 export class IFSC {
-  @Column()
+  @Column({ nullable: true })
   bank: string;
 
   @PrimaryColumn()
   ifsc: string;
 
-  @Column()
+  @Column({ nullable: true })
   branch: string;
 
-  @Column()
+  @Column({ nullable: true })
   district: string;
 
-  @Column()
+  @Column({ nullable: true })
   state: string;
 
-  @Column()
+  @Column({ nullable: true })
   address: string;
 
-  @Column()
+  @Column({ nullable: true })
   contact: string;
 
-  @Column()
+  @Column({ nullable: true })
   imps: string;
 
-  @Column()
+  @Column({ nullable: true })
   rtgs: string;
 
-  @Column()
+  @Column({ nullable: true })
   city: string;
 
-  @Column()
+  @Column({ nullable: true })
   iso3166: string;
 
-  @Column()
+  @Column({ nullable: true })
   neft: string;
 
-  @Column()
+  @Column({ nullable: true })
   micr: string;
 
-  @Column()
+  @Column({ nullable: true })
   upi: string;
 
   @Column({ nullable: true })
