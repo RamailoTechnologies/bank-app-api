@@ -29,9 +29,7 @@ export class Bank {
   offers: Offer[];
 
   @OneToMany(() => Account, (account) => account.bank, {
-    cascade: true, // <= here
-    onDelete: 'CASCADE',
-    onUpdate: 'CASCADE',
+    cascade: true,
   })
   account: Account[];
 }

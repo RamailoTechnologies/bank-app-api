@@ -24,6 +24,7 @@ export class AccountService {
   async create(createAccountDto: CreateAccountDto) {
     try {
       const { userId, bankId } = createAccountDto;
+      console.log(bankId);
       const checkUser = await this.userRepository.findBy({ userId });
       if (!checkUser) throw new NotFoundException('User Not Found');
 
