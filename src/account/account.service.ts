@@ -60,7 +60,7 @@ export class AccountService {
       return data;
     } catch (err) {
       console.error(err);
-      throw new BadRequestException();
+      throw new BadRequestException('Unknown Error');
     }
   }
 
