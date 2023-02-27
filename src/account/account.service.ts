@@ -48,12 +48,11 @@ export class AccountService {
         }
       });
 
-      const data = bankId.map(async (eachId) => {
-        delete createAccountDto.bankId;
+      const data = bankId.map(async (bankId) => {
+        console.log(bankId);
         const datas = await this.accountRepository.save({
-          ...createAccountDto,
           user: { userId },
-          bank: { bankId: eachId },
+          bank: { bankId },
         });
         return datas;
       });

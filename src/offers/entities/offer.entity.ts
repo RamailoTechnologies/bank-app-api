@@ -24,6 +24,9 @@ export class Offer {
   offerTitle: string;
 
   @Column()
+  bankName: string;
+
+  @Column()
   offerDescription: string;
 
   @Column()
@@ -40,9 +43,4 @@ export class Offer {
 
   @Column({ type: 'enum', enum: loanCategory })
   category: loanCategory;
-
-  // relations
-  @ManyToOne(() => Bank, (bank) => bank.offers)
-  @JoinColumn()
-  bank: Bank;
 }

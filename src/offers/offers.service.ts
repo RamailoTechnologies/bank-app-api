@@ -11,21 +11,17 @@ export class OffersService {
     @InjectRepository(Offer)
     private readonly offerRepository: Repository<Offer>,
   ) {}
-  create(createOfferDto: CreateOfferDto, bankId: string) {
-    return this.offerRepository.save({ ...createOfferDto, bank: { bankId } });
+  create(createOfferDto: CreateOfferDto) {
+    return this.offerRepository.save(createOfferDto);
   }
 
-  findAll(bankId: string) {
-    return this.offerRepository.find({
-      where: { bank: { bankId } },
-      relations: { bank: true },
-    });
+  findAll() {
+    return this.offerRepository.find();
   }
 
   findOne(offerId: string) {
     return this.offerRepository.findOne({
       where: { offerId },
-      relations: { bank: true },
     });
   }
 

@@ -17,19 +17,16 @@ import { ApiOperation, ApiTags } from '@nestjs/swagger';
 export class OffersController {
   constructor(private readonly offersService: OffersService) {}
 
-  @Post(':bankId')
+  @Post()
   @ApiOperation({ summary: 'Insert offer Provided by bank ' })
-  create(
-    @Body() createOfferDto: CreateOfferDto,
-    @Param('bankId') bankId: string,
-  ) {
-    return this.offersService.create(createOfferDto, bankId);
+  create(@Body() createOfferDto: CreateOfferDto) {
+    return this.offersService.create(createOfferDto);
   }
 
-  @Get(':bankId')
-  @ApiOperation({ summary: 'Find all Offer Provided by Individual bank ' })
-  findAll(@Param('bankId') bankId: string) {
-    return this.offersService.findAll(bankId);
+  @Get()
+  @ApiOperation({ summary: 'Find all Offers ' })
+  findAll() {
+    return this.offersService.findAll();
   }
 
   @Get(':offerId')

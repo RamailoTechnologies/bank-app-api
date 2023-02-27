@@ -25,9 +25,6 @@ export class Bank {
   @OneToMany(() => SmsBanking, (sms) => sms.bank)
   smsBanking: SmsBanking[];
 
-  @OneToMany(() => Offer, (offer) => offer.bank)
-  offers: Offer[];
-
   @OneToMany(() => Account, (account) => account.bank, {
     cascade: true,
   })
