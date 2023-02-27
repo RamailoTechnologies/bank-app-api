@@ -26,6 +26,9 @@ export class Account {
   @Column({ nullable: true })
   ifsc: string;
 
+  @Column({ nullable: true })
+  address: string;
+
   //relations
   @ManyToOne(() => User, (user) => user.account)
   @JoinColumn()

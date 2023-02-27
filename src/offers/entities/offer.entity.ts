@@ -24,16 +24,10 @@ export class Offer {
   offerTitle: string;
 
   @Column()
-  bankName: string;
-
-  @Column()
   offerDescription: string;
 
   @Column()
   offerLink: string;
-
-  @Column()
-  offerValidTill: Date;
 
   @CreateDateColumn()
   createdAt: Date;

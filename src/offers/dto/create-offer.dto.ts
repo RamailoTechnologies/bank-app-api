@@ -8,24 +8,12 @@ export class CreateOfferDto {
   offerTitle: string;
 
   @IsString()
-  @ApiProperty({ type: 'string', example: 'nic asia' })
-  bankName: string;
-
-  @IsString()
   @ApiProperty({ type: 'string', example: 'open account' })
   offerDescription: string;
 
   @IsString()
   @ApiProperty({ type: 'string', example: 'https://google.com' })
   offerLink: string;
-
-  @IsDateString()
-  @ApiProperty({
-    type: 'string',
-    format: 'date-time',
-    example: '2017-07-21T17:32:28Z',
-  })
-  offerValidTill: Date;
 
   @IsEnum(loanCategory)
   @ApiProperty({ type: 'string', enum: loanCategory })

@@ -40,7 +40,6 @@ export class AccountService {
       });
 
       const bankData = await this.find(userId);
-
       bankData.map((eachBank) => {
         console.log(eachBank.bank);
         if (bankId.includes(eachBank.bank.bankId)) {
@@ -54,6 +53,7 @@ export class AccountService {
           user: { userId },
           bank: { bankId },
         });
+        console.log('new account', datas.accountId);
         return datas;
       });
 
@@ -93,9 +93,10 @@ export class AccountService {
   async removeBank(deleteAccountDto: DeleteAccountDto) {
     try {
       const { accountId } = deleteAccountDto;
+
       const account = await accountId.map(async (eachId) => {
-        const checkAccount = await this.accountRepository.findOne({
-          where: { accountId: eachId },
+        const checkAccount = await this.accountRepository.findBy({
+          accountId: eachId,
         });
         if (checkAccount) {
           await this.accountRepository.delete(accountId);
