@@ -11,8 +11,11 @@ export class Bank {
   @Column()
   bankName: string;
 
-  @Column()
+  @Column({ nullable: true })
   logo: string;
+
+  @Column({ nullable: true })
+  netBanking: string;
 
   @Column({ nullable: true, default: false })
   isPopular: boolean;
