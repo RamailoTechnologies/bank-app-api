@@ -20,6 +20,11 @@ export class SmsBanking {
   })
   category: string;
 
+  @Column({
+    nullable: true,
+  })
+  isSms: boolean;
+
   @Column({ nullable: true })
   callServiceNumber: string;
 
