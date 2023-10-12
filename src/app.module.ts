@@ -26,7 +26,7 @@ import { IfscModule } from './ifsc/ifsc.module';
       database: DB.database,
       username: DB.username,
       password: DB.password,
-      port: +DB.port,
+      port: DB.port,
     }),
     BankModule,
     AccountModule,

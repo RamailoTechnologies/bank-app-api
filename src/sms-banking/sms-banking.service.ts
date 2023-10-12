@@ -19,10 +19,18 @@ export class SmsBankingService {
   }
 
   async findAll(bankId: string) {
-    return await this.smsBankingRepository.find({
+  var response =   await this.smsBankingRepository.find({
       where: { bank: { bankId } },
       relations: { bank: true },
     });
+    for (var i = 0; i < response.length; i++) {
+        if (response[i].smsPattern == ""){
+            response[i].isSms = false;
+        }else {
+          response[i].isSms = true;
+        }
+    }
+    return response;
   }
 
   async findOne(serviceId: string) {

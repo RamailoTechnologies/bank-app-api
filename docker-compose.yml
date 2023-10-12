@@ -1,0 +1,30 @@
+version: '3'
+
+services:
+  backend:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: bank-app-backend
+    ports:
+      - "8080:8080" # Adjust the port as needed
+    env_file:
+      - .env # Use the .env file for environment variables
+    depends_on:
+      - db
+
+  db:
+    image: postgres:13 # Use the desired PostgreSQL version
+    container_name: bank-app-db
+    ports:
+      - "5432:5432" # Adjust the port as needed
+    volumes:
+      - /var/folders/postgres:/data/postgres
+    env_file:
+      - .env # Use the .env file for environment variables
+
+  # Add any other services you may need, such as a reverse proxy or caching service.
+
+networks:
+  default:
+    driver: bridge
